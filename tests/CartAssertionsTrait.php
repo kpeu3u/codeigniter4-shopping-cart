@@ -1,19 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests;
 
-use Fluent\ShoppingCart\Cart;
 use PHPUnit\Framework\Assert;
+use ShoppingCart\Cart;
 
-trait CartAssertions
+trait CartAssertionsTrait
 {
     /**
-     * Assert that cart containts the given number of items.
-     * 
-     * @param int|float $items
-     * @param \Fluent\ShoppingCart\Cart $cart
+     * Assert that cart contains the given number of items.
      */
-    public function assertItemsInCart($items, Cart $cart)
+    public function assertItemsInCart(int $items, Cart $cart): void
     {
         $actual = $cart->count();
 
@@ -22,11 +21,8 @@ trait CartAssertions
 
     /**
      * Assert that the cart contains the given number of rows.
-     *
-     * @param int $rows
-     * @param \Fluent\ShoppingCart\Cart $cart
      */
-    public function assertRowsInCart($rows, Cart $cart)
+    public function assertRowsInCart(int $rows, Cart $cart): void
     {
         $actual = $cart->content()->count();
 

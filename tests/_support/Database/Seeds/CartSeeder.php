@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Support\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
-use Fluent\ShoppingCart\Models\ShoppingCart;
 
 class CartSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
     }
 }

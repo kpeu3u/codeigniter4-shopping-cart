@@ -1,13 +1,13 @@
 # CodeIgniter4 Shopping Cart
 
-Ported from https://github.com/Crinsane/LaravelShoppingcart for CodeIgniter4
+Ported from https://github.com/agungsugiarto/codeigniter4-shoppingcart for CodeIgniter4 and PHP ^8.0
 
-[![Latest Stable Version](https://poser.pugx.org/agungsugiarto/codeigniter4-shoppingcart/v)](https://packagist.org/packages/agungsugiarto/codeigniter4-shoppingcart)
-[![Total Downloads](https://poser.pugx.org/agungsugiarto/codeigniter4-shoppingcart/downloads)](https://packagist.org/packages/agungsugiarto/codeigniter4-shoppingcart)
-[![Latest Unstable Version](https://poser.pugx.org/agungsugiarto/codeigniter4-shoppingcart/v/unstable)](https://packagist.org/packages/agungsugiarto/codeigniter4-shoppingcart)
-[![License](https://poser.pugx.org/agungsugiarto/codeigniter4-shoppingcart/license)](https://packagist.org/packages/agungsugiarto/codeigniter4-shoppingcart)
+[![Latest Stable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
+[![Total Downloads](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/downloads)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
+[![Latest Unstable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v/unstable)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
+[![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/agungsugiarto/codeigniter4-shopping-cart)
 
-A simple shoppingcart implementation for CodeIgniter4.
+A simple shopping cart implementation for CodeIgniter4.
 
 ## Installation
 
@@ -15,9 +15,9 @@ Install the package through [Composer](http://getcomposer.org/).
 
 Run the Composer require command from the Terminal:
 
-    composer require agungsugiarto/codeigniter4-shoppingcart
+    composer require kpeu3u/codeigniter4-shopping-cart
 
-Now you're ready to start using the shoppingcart in your application.
+Now you're ready to start using the shopping cart in your application.
 
 ## Overview
 Look at one of the following topics to learn more about CodeIgniter4 ShoppingCart
@@ -37,20 +37,20 @@ Example how to load library
 
 ```php
 // Via services
-$cart = \Fluent\ShoppingCart\Config\Services::cart();
+$cart = \ShoppingCart\Config\Services::cart();
 $cart->add();
 
 // Traditional way
-$cart = new \Fluent\ShoppingCart\Cart();
+$cart = new \ShoppingCart\Cart();
 $cart->add();
 
 // Static call
-use Fluent\ShooppingCart\Facades\Cart;
+use ShooppingCart\Facades\Cart;
 
 Cart::add()
 ```
 
-The shoppingcart gives you the following methods to use:
+The shopping-cart gives you the following methods to use:
 
 ### Cart::add()
 
@@ -179,7 +179,7 @@ Cart::total();
 The method will automatically format the result, which you can tweak using the three optional parameters
 
 ```php
-Cart::total($decimals, $decimalSeperator, $thousandSeperator);
+Cart::total($decimals, $decimalSeparator, $thousandSeparator);
 ```
 
 You can set the default number format in the config file.
@@ -197,7 +197,7 @@ Cart::taxt();
 The method will automatically format the result, which you can tweak using the three optional parameters
 
 ```php
-Cart::taxt($decimals, $decimalSeperator, $thousandSeperator);
+Cart::taxt($decimals, $decimalSeparator, $thousandSeparator);
 ```
 
 You can set the default number format in the config file.
@@ -215,7 +215,7 @@ Cart::subtotal();
 The method will automatically format the result, which you can tweak using the three optional parameters
 
 ```php
-Cart::subtotal($decimals, $decimalSeperator, $thousandSeperator);
+Cart::subtotal($decimals, $decimalSeparator, $thousandSeparator);
 ```
 
 You can set the default number format in the config file.
@@ -340,7 +340,7 @@ foreach(Cart::content() as $row) {
 
 ### Configuration
 To save cart into the database so you can retrieve it later, the package needs to know which database connection to use and what the name of the table is.
-By default the package will use the default database connection and use a table named `shoppingcart`.
+By default, the package will use the default database connection and use a table named `shoppingcart`.
 If you want to change these options, you'll have to publish the `config` file.
 
     php spark config:publish
