@@ -5,7 +5,7 @@ Ported from https://github.com/agungsugiarto/codeigniter4-shoppingcart for CodeI
 [![Latest Stable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![Total Downloads](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/downloads)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![Latest Unstable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v/unstable)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
-[![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/agungsugiarto/codeigniter4-shopping-cart)
+[![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 
 A simple shopping cart implementation for CodeIgniter4.
 
