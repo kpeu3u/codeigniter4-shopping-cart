@@ -5,7 +5,7 @@ Ported from https://github.com/agungsugiarto/codeigniter4-shoppingcart for CodeI
 [![Latest Stable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![Total Downloads](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/downloads)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![Latest Unstable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v/unstable)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
-[![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/agungsugiarto/codeigniter4-shopping-cart)
+[![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 
 A simple shopping cart implementation for CodeIgniter4.
 
@@ -76,7 +76,7 @@ Maybe you prefer to add the item using an array? As long as the array contains t
 Cart::add(['id' => '293ad', 'name' => 'Product 1', 'qty' => 1, 'price' => 9.99, 'options' => ['size' => 'large']]);
 ```
 
-New in version 2 of the package is the possibility to work with the `Buyable` interface. The way this works is that you have a model implement the `Buyable` interface, which will make you implement a few methods so the package knows how to get the id, name and price from your model. 
+Possibility to work with the `Buyable` interface. The way this works is that you have a model implement the `Buyable` interface, which will make you implement a few methods so the package knows how to get the id, name and price from your model. 
 This way you can just pass the `add()` method a model and the quantity and it will automatically add it to the cart. 
 
 **As an added bonus it will automatically associate the model with the CartItem**
