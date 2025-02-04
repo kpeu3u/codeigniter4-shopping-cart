@@ -1,42 +1,40 @@
 <?php
 
-namespace Fluent\ShoppingCart;
+declare(strict_types=1);
 
-use Fluent\ShoppingCart\Contracts\Buyable;
-use Fluent\ShoppingCart\Exceptions\InvalidRowIDException;
-use Fluent\ShoppingCart\Exceptions\UnknownModelException;
-use Fluent\ShoppingCart\Models\ShoppingCart;
+namespace ShoppingCart;
+
+use Closure;
 use CodeIgniter\Config\Services;
+use CodeIgniter\Database\BaseResult;
 use CodeIgniter\Events\Events;
 use CodeIgniter\I18n\Time;
-use Tightenco\Collect\Support\Collection;
+use CodeIgniter\Session\Session;
+use Exception;
+use Illuminate\Support\Collection;
+use ShoppingCart\Contracts\Buyable;
+use ShoppingCart\Exceptions\InvalidRowIDException;
+use ShoppingCart\Exceptions\UnknownModelException;
+use ShoppingCart\Models\ShoppingCart;
 
 class Cart
 {
-    const DEFAULT_INSTANCE = 'default';
+    public const DEFAULT_INSTANCE = 'default';
 
     /**
      * Instance session manager.
-     *
-     * @var \CodeIgniter\Session\Session
      */
-    protected $session;
+    protected Session $session;
 
     /**
      * Model shopping cart.
-     *
-     * @var \Fluent\ShoppingCart\Models\ShoppingCart $model
      */
-    protected $model;
+    protected ShoppingCart $model;
 
-    /**
-     * @var string
-     */
-    protected $instance;
+    protected string $instance;
 
     /**
      * Cart constructor.
-     *
      */
     public function __construct()
     {
@@ -49,14 +47,11 @@ class Cart
 
     /**
      * Get the current cart instance.
-     *
-     * @param string|null $instance
-     * @return $this
      */
-    public function instance($instance = null)
+    public function instance(?string $instance = null): Cart
     {
-        $instance = $instance ?? self::DEFAULT_INSTANCE;
-        
+        $instance ??= self::DEFAULT_INSTANCE;
+
         $this->instance = sprintf('%s.%s', 'cart', $instance);
 
         return $this;
@@ -64,37 +59,25 @@ class Cart
 
     /**
      * Get the current instance.
-     *
-     * @return string
      */
-    public function currentInstance()
+    public function currentInstance(): string
     {
         return str_replace('cart.', '', $this->instance);
     }
 
     /**
      * Add an item to the cart.
-     *
-     * @param mixed          $id
-     * @param mixed          $name
-     * @param int|float|null $qty
-     * @param float|null     $price
-     * @param array          $options
-     * @param float|null     $taxrate
-     * @return \Fluent\ShoppingCart\CartItem|array
      */
-    public function add($id, $name = null, $qty = null, $price = null, array $options = [], $taxrate = null)
+    public function add(mixed $id, mixed $name = null, mixed $qty = null, mixed $price = null, array $options = [], mixed $taxRate = null): array|CartItem
     {
         if ($this->isMulti($id)) {
-            return array_map(function ($item) {
-                return $this->add($item);
-            }, $id);
+            return array_map(fn ($item) => $this->add($item), $id);
         }
 
         if ($id instanceof CartItem) {
             $cartItem = $id;
         } else {
-            $cartItem = $this->createCartItem($id, $name, $qty, $price, $options, $taxrate);
+            $cartItem = $this->createCartItem($id, $name, $qty, $price, $options, $taxRate);
         }
 
         $content = $this->getContent();
@@ -114,12 +97,8 @@ class Cart
 
     /**
      * Update the cart item with the given rowId.
-     *
-     * @param string $rowId
-     * @param mixed  $qty
-     * @return \Fluent\ShoppingCart\CartItem
      */
-    public function update($rowId, $qty)
+    public function update(mixed $rowId, mixed $qty): ?CartItem
     {
         $cartItem = $this->get($rowId);
 
@@ -145,10 +124,9 @@ class Cart
         if ($cartItem->qty <= 0) {
             $this->remove($cartItem->rowId);
 
-            return;
-        } else {
-            $content->put($cartItem->rowId, $cartItem);
+            return null;
         }
+        $content->put($cartItem->rowId, $cartItem);
 
         Events::trigger('cart.updated', $cartItem);
 
@@ -159,11 +137,8 @@ class Cart
 
     /**
      * Remove the cart item with the given rowId from the cart.
-     *
-     * @param string $rowId
-     * @return void
      */
-    public function remove($rowId)
+    public function remove(mixed $rowId): void
     {
         $cartItem = $this->get($rowId);
 
@@ -178,11 +153,8 @@ class Cart
 
     /**
      * Get a cart item from the cart by its rowId.
-     *
-     * @param string $rowId
-     * @return \Fluent\ShoppingCart\CartItem
      */
-    public function get($rowId)
+    public function get(mixed $rowId): CartItem
     {
         $content = $this->getContent();
 
@@ -195,22 +167,18 @@ class Cart
 
     /**
      * Destroy the current cart instance.
-     *
-     * @return void
      */
-    public function destroy()
+    public function destroy(): void
     {
         $this->session->remove($this->instance);
     }
 
     /**
      * Get the content of the cart.
-     *
-     * @return \Tightenco\Collect\Support\Collection|array
      */
-    public function content()
+    public function content(): array|Collection
     {
-        if (is_null($this->session->get($this->instance))) {
+        if (null === $this->session->get($this->instance)) {
             return new Collection([]);
         }
 
@@ -219,90 +187,60 @@ class Cart
 
     /**
      * Get the number of items in the cart.
-     *
-     * @return int|float
      */
-    public function count()
+    public function count(): int
     {
         return $this->getContent()->sum('qty');
     }
 
     /**
      * Get the total price of the items in the cart.
-     *
-     * @param int|null    $decimals
-     * @param string|null $decimalPoint
-     * @param string|null $thousandSeparator
-     * @return string
      */
-    public function total($decimals = null, $decimalPoint = null, $thousandSeparator = null)
+    public function total(?int $decimals = null, ?string $decimalPoint = null, ?string $thousandSeparator = null): string
     {
         $content = $this->getContent();
 
-        $total = $content->reduce(function ($total, CartItem $cartItem) {
-            return $total + ($cartItem->qty * $cartItem->priceTax);
-        }, 0);
+        $total = (float) $content->reduce(static fn ($total, CartItem $cartItem) => $total + ($cartItem->qty * (float) $cartItem->priceTax()), 0);
 
         return CartItem::numberFormat($total, $decimals, $decimalPoint, $thousandSeparator);
     }
 
     /**
      * Get the total tax of the items in the cart.
-     *
-     * @param int|null    $decimals
-     * @param string|null $decimalPoint
-     * @param string|null $thousandSeparator
-     * @return float
      */
-    public function tax($decimals = null, $decimalPoint = null, $thousandSeparator = null)
+    public function tax(?int $decimals = null, ?string $decimalPoint = null, ?string $thousandSeparator = null): string
     {
         $content = $this->getContent();
 
-        $tax = $content->reduce(function ($tax, CartItem $cartItem) {
-            return $tax + ($cartItem->qty * $cartItem->tax);
-        }, 0);
+        $tax = (float) $content->reduce(static fn ($tax, CartItem $cartItem) => $tax + ($cartItem->qty * (float) $cartItem->tax()), 0);
 
         return CartItem::numberFormat($tax, $decimals, $decimalPoint, $thousandSeparator);
     }
 
     /**
      * Get the subtotal (total - tax) of the items in the cart.
-     *
-     * @param int|null    $decimals
-     * @param string|null $decimalPoint
-     * @param string|null $thousandSeperator
-     * @return float
      */
-    public function subtotal($decimals = null, $decimalPoint = null, $thousandSeperator = null)
+    public function subtotal(?int $decimals = null, ?string $decimalPoint = null, ?string $thousandSeparator = null): string
     {
         $content = $this->getContent();
 
-        $subTotal = $content->reduce(function ($subTotal, CartItem $cartItem) {
-            return $subTotal + ($cartItem->qty * $cartItem->price);
-        }, 0);
+        $subTotal = (float) $content->reduce(static fn ($subTotal, CartItem $cartItem) => $subTotal + ($cartItem->qty * (float) $cartItem->price), 0);
 
-        return CartItem::numberFormat($subTotal, $decimals, $decimalPoint, $thousandSeperator);
+        return CartItem::numberFormat($subTotal, $decimals, $decimalPoint, $thousandSeparator);
     }
 
     /**
      * Search the cart content for a cart item matching the given search closure.
-     *
-     * @param \Closure $search
-     * @return \Tightenco\Collect\Support\Collection
      */
-    public function search(\Closure $search)
+    public function search(Closure $search): Collection
     {
         return $this->getContent()->filter($search);
     }
 
     /**
      * Associate the cart item with the given rowId with the given model.
-     *
-     * @param string $rowId
-     * @param mixed  $model
-     * @return void
      */
-    public function associate($rowId, $model)
+    public function associate(string $rowId, mixed $model): void
     {
         if (is_string($model) && ! class_exists($model)) {
             throw new UnknownModelException("The supplied model {$model} does not exist.");
@@ -321,12 +259,8 @@ class Cart
 
     /**
      * Set the tax rate for the cart item with the given rowId.
-     *
-     * @param string    $rowId
-     * @param int|float $taxRate
-     * @return void
      */
-    public function setTax($rowId, $taxRate)
+    public function setTax(string $rowId, float|int $taxRate): void
     {
         $cartItem = $this->get($rowId);
 
@@ -340,14 +274,11 @@ class Cart
     }
 
     /**
-     * Store an the current instance of the cart.
+     * Store current instance of the cart.
      *
-     * @param mixed $identifier
-     * @return void
-     *
-     * @throws \Exception
+     * @throws Exception
      */
-    public function store($identifier)
+    public function store(mixed $identifier): void
     {
         $content = $this->getContent();
 
@@ -369,11 +300,8 @@ class Cart
 
     /**
      * Restore the cart with the given identifier.
-     *
-     * @param mixed $identifier
-     * @return void
      */
-    public function restore($identifier)
+    public function restore(mixed $identifier): void
     {
         if (! $this->storedCartWithIdentifierExists($identifier)) {
             return;
@@ -403,14 +331,10 @@ class Cart
         $this->instance($currentInstance);
     }
 
-
     /**
      * Deletes the stored cart with given identifier
-     *
-     * @param mixed $identifier
-     * @return mixed
      */
-    protected function deleteStoredCart($identifier)
+    protected function deleteStoredCart(mixed $identifier): BaseResult|bool
     {
         return $this->model->where('identifier', $identifier)->delete();
     }
@@ -418,10 +342,9 @@ class Cart
     /**
      * Magic method to make accessing the total, tax and subtotal properties possible.
      *
-     * @param string $attribute
-     * @return float|null
+     * @return string|null
      */
-    public function __get($attribute)
+    public function __get(string $attribute)
     {
         if ($attribute === 'total') {
             return $this->total();
@@ -440,10 +363,8 @@ class Cart
 
     /**
      * Get the carts content, if there is no cart content set yet, return a new empty Collection.
-     *
-     * @return \Tightenco\Collect\Support\Collection|array
      */
-    protected function getContent()
+    protected function getContent(): array|Collection
     {
         return $this->session->has($this->instance)
             ? $this->session->get($this->instance)
@@ -453,15 +374,11 @@ class Cart
     /**
      * Create a new CartItem from the supplied attributes.
      *
-     * @param mixed     $id
-     * @param mixed     $name
-     * @param int|float $qty
+     * @param float|int $qty
      * @param float     $price
-     * @param array     $options
-     * @param float     $taxrate
-     * @return \Fluent\ShoppingCart\CartItem
+     * @param float     $taxRate
      */
-    private function createCartItem($id, $name, $qty, $price, array $options, $taxrate)
+    private function createCartItem(mixed $id, mixed $name, $qty, mixed $price, array $options, $taxRate): CartItem
     {
         if ($id instanceof Buyable) {
             $cartItem = CartItem::fromBuyable($id, $qty ?: []);
@@ -475,8 +392,8 @@ class Cart
             $cartItem->setQuantity($qty);
         }
 
-        if (isset($taxrate) && is_numeric($taxrate)) {
-            $cartItem->setTaxRate($taxrate);
+        if (! empty($taxRate) && is_numeric($taxRate)) {
+            $cartItem->setTaxRate($taxRate);
         } else {
             $cartItem->setTaxRate(config('Cart')->tax);
         }
@@ -486,11 +403,8 @@ class Cart
 
     /**
      * Check if the item is a multidimensional array or an array of Buyables.
-     *
-     * @param mixed $item
-     * @return bool
      */
-    private function isMulti($item)
+    private function isMulti(mixed $item): bool
     {
         if (! is_array($item)) {
             return false;
@@ -499,14 +413,8 @@ class Cart
         return is_array(reset($item)) || reset($item) instanceof Buyable;
     }
 
-    /**
-     * @param $identifier
-     * @return bool
-     */
-    protected function storedCartWithIdentifierExists($identifier)
+    protected function storedCartWithIdentifierExists(mixed $identifier): bool
     {
-        return $this->model->where('identifier', $identifier)->where('instance', $this->currentInstance())->first()
-            ? true
-            : false;
+        return (bool) $this->model->where('identifier', $identifier)->where('instance', $this->currentInstance())->first();
     }
 }

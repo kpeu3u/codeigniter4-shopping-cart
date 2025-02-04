@@ -1,13 +1,15 @@
 <?php
 
-namespace Fluent\ShoppingCart\Config;
+declare(strict_types=1);
 
-use Fluent\ShoppingCart\Cart;
+namespace ShoppingCart\Config;
+
 use CodeIgniter\Config\BaseService;
+use ShoppingCart\Cart;
 
 class Services extends BaseService
 {
-    public static function cart($getShared = true)
+    public static function cart($getShared = true): object
     {
         if ($getShared) {
             return static::getSharedInstance('cart');
