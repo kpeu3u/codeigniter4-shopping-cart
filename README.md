@@ -6,6 +6,13 @@ Ported from https://github.com/agungsugiarto/codeigniter4-shoppingcart for CodeI
 [![Total Downloads](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/downloads)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![Latest Unstable Version](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/v/unstable)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
 [![License](https://poser.pugx.org/kpeu3u/codeigniter4-shopping-cart/license)](https://packagist.org/packages/kpeu3u/codeigniter4-shopping-cart)
+[![Build Status](https://github.com/kpeu3u/codeigniter4-shopping-cart/actions/workflows/main.yml/badge.svg)](https://github.com/kpeu3u/codeigniter4-shopping-cart/actions)
+[![Coverage Status](https://coveralls.io/repos/github/kpeu3u/codeigniter4-shopping-cart/badge.svg?branch=main)](https://coveralls.io/github/kpeu3u/codeigniter4-shopping-cart?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/kpeu3u/codeigniter4-shopping-cart/badge.svg?branch=main)](https://coveralls.io/github/kpeu3u/codeigniter4-shopping-cart?branch=main)
+[![Dependency Status](https://david-dm.org/kpeu3u/codeigniter4-shopping-cart.svg)](https://david-dm.org/kpeu3u/codeigniter4-shopping-cart)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/kpeu3u/codeigniter4-shopping-cart/blob/main/LICENSE.md)
+[![PHP Version](https://img.shields.io/badge/php-%5E8.0-blue.svg)](https://php.net/)
+[![CodeIgniter4 Version](https://img.shields.io/badge/codeigniter-%5E4.1-blue.svg)](https://codeigniter.com/)
 
 A simple shopping cart implementation for CodeIgniter4.
 
