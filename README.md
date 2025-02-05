@@ -190,18 +190,18 @@ You can set the default number format in the config file.
 
 **If you're not using the Facade, but use dependency injection in your (for instance) Controller, you can also simply get the total property `$cart->total`**
 
-### Cart::taxt()
+### Cart::tax()
 
 The `tax()` method can be used to get the calculated amount of tax for all items in the cart, given there price and quantity.
 
 ```php
-Cart::taxt();
+Cart::tax();
 ```
 
 The method will automatically format the result, which you can tweak using the three optional parameters
 
 ```php
-Cart::taxt($decimals, $decimalSeparator, $thousandSeparator);
+Cart::tax($decimals, $decimalSeparator, $thousandSeparator);
 ```
 
 You can set the default number format in the config file.
