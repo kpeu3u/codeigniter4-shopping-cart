@@ -1,6 +1,6 @@
 {
     "name": "kpeu3u/codeigniter4-shopping-cart",
-    "description": "CodeIgniter4 shopping cart.",
+    "description": "Codeigniter4 shopping cart.",
     "keywords": ["codeigniter4", "shopping cart", "cart"],
     "license": "MIT",
     "authors": [
@@ -10,15 +10,15 @@
         }
     ],
     "require": {
-        "php": "^8.2",
+        "php": "^8.0",
         "ext-json": "*",
-        "codeigniter4/framework": "^4.5.5",
+        "codeigniter4/framework": "^4.1.0",
         "illuminate/collections": "^11.36"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "mikey179/vfsstream": "^1.6",
-        "phpunit/phpunit": "^9.6",
+        "phpunit/phpunit": "^10.5.44",
         "codeigniter4/devkit": "^1.2",
         "mockery/mockery": "^1.6",
         "rector/rector": "^1.2"
@@ -57,17 +57,13 @@
         "ci": [
             "Composer\\Config::disableProcessTimeout",
             "@cs",
-            "@deduplicate",
-            "@inspect",
             "@analyze",
             "@test"
         ],
         "cs": "php-cs-fixer fix --ansi --verbose --dry-run --diff",
         "cs-fix": "php-cs-fixer fix --ansi --verbose --diff",
-        "deduplicate": "phpcpd app/ src/ --exclude src/Database/Migrations/2020-12-28-223112_create_auth_tables.php",
-        "inspect": "deptrac analyze --cache-file=build/deptrac.cache",
         "mutate": "infection --threads=2 --skip-initial-tests --coverage=build/phpunit",
         "style": "@cs-fix",
-        "test": "phpunit --testdox --colors=always -vvv"
+        "test": "phpunit --testdox --colors=always"
     }
 }
