@@ -376,7 +376,7 @@ class Cart
      *
      * @param float|int $qty
      * @param float     $price
-     * @param float     $taxRate
+     * @param float|int $taxRate
      */
     private function createCartItem(mixed $id, mixed $name, $qty, mixed $price, array $options, $taxRate): CartItem
     {
@@ -392,7 +392,7 @@ class Cart
             $cartItem->setQuantity($qty);
         }
 
-        if (! empty($taxRate) && is_numeric($taxRate)) {
+        if (is_numeric($taxRate)) {
             $cartItem->setTaxRate($taxRate);
         } else {
             $cartItem->setTaxRate(config('Cart')->tax);
